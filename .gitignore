@@ -7,6 +7,7 @@
 /.pnp
 .pnp.js
 .env
+contacts.json
 
 # testing
 /coverage
