@@ -71,10 +71,21 @@ client.on("message", async (message) => {
   updateContactLog(message.from, message.body);
 
   // Get AI response with message count
-  const aiResponse = await getAIResponse(message.body, messageCounts[message.from]);
+  const aiResponse = await getAIResponse(
+    message.body,
+    messageCounts[message.from]
+  );
 
   if (aiResponse) {
-    await client.sendMessage(message.from, aiResponse);
+    // Add a random delay between 5 to 60 seconds before sending the reply
+    const replyDelay = (Math.floor(Math.random() * 56) + 5) * 1000; // Random time from 5 to 60 sec
+
+    setTimeout(async () => {
+      await client.sendMessage(message.from, aiResponse);
+      console.log(
+        `Sent AI Response (after ${replyDelay / 1000}s delay): ${aiResponse}`
+      );
+    }, replyDelay);
   }
 
   // Set reminder after a random time between 40 to 60 minutes
@@ -82,7 +93,10 @@ client.on("message", async (message) => {
     clearTimeout(reminderTimers[message.from]); // Reset timer if they send another message
   }
   const reminderTime = (Math.floor(Math.random() * 21) + 40) * 60 * 1000; // Random time from 40 to 60 min
-  reminderTimers[message.from] = setTimeout(() => sendReminder(message.from), reminderTime);
+  reminderTimers[message.from] = setTimeout(
+    () => sendReminder(message.from),
+    reminderTime
+  );
 });
 
 // Function to get AI-generated response
@@ -149,11 +163,6 @@ async function sendReminder(contact) {
     "You haven’t messaged in a while... Are you trying to make me miss you even more? 😏",
     "I hope you haven’t forgotten about me! Because I haven’t stopped thinking about you. 💕",
     "I think my heart is addicted to you... It’s been too long without a message! 😘",
-    "I wonder what you're doing right now... Wanna let me in on the secret? 😉",
-    "Your messages make my day brighter. Send one and make me smile? 😊",
-    "I hope you’re not too busy to miss me… because I sure am missing you! 😍",
-    "Just a little reminder: You’re on my mind, and I kinda adore you. 💖",
-    "I think my day is incomplete without hearing from you… Fix that, will you? 😘",
   ];
 
   const randomMessage = reminders[Math.floor(Math.random() * reminders.length)];
