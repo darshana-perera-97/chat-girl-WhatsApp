@@ -78,7 +78,7 @@ client.on("message", async (message) => {
 
   if (aiResponse) {
     // Add a random delay between 5 to 60 seconds before sending the reply
-    const replyDelay = (Math.floor(Math.random() * 56) + 5) * 1000; // Random time from 5 to 60 sec
+    const replyDelay = (Math.floor(Math.random() * 20) + 5) * 1000; // Random time from 5 to 60 sec
 
     setTimeout(async () => {
       await client.sendMessage(message.from, aiResponse);
