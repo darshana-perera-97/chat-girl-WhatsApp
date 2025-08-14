@@ -21,8 +21,11 @@ const client = new Client({
       "--disable-accelerated-2d-canvas",
       "--no-first-run",
       "--no-zygote",
-      "--disable-gpu"
-    ]
+      "--disable-gpu",
+      "--disable-web-security",
+      "--disable-features=VizDisplayCompositor"
+    ],
+    timeout: 60000
   },
 });
 
@@ -89,10 +92,14 @@ client.on("message", async (message) => {
     const replyDelay = (Math.floor(Math.random() * 20) + 5) * 1000; // Random time from 5 to 60 sec
 
     setTimeout(async () => {
-      await client.sendMessage(message.from, aiResponse);
-      console.log(
-        `Sent AI Response (after ${replyDelay / 1000}s delay): ${aiResponse}`
-      );
+      try {
+        await client.sendMessage(message.from, aiResponse);
+        console.log(
+          `Sent AI Response (after ${replyDelay / 1000}s delay): ${aiResponse}`
+        );
+      } catch (error) {
+        console.error(`Error sending message to ${message.from}:`, error.message);
+      }
     }, replyDelay);
   }
 
@@ -150,33 +157,37 @@ async function getAIResponse(userMessage, chatCount) {
 
 // Function to send a lovely reminder message
 async function sendReminder(contact) {
-  const reminders = [
-    "Hey love, are you still there? 🥺💕 I miss our chat already!",
-    "It's been a while since I heard from you... Did I make you blush too much? 😘",
-    "I'm still thinking about our last conversation... You make my heart skip a beat! 💖",
-    "If I were with you right now, I'd give you the biggest hug! 🤗 Don't keep me waiting too long!",
-    "I can't stop smiling thinking about you. What are you up to, cutie? 😍",
-    "Missing you a little extra today... Should I tell you how much? 😏",
-    "I was just thinking about you. Are you thinking about me too? 😘",
-    "You better not be ignoring me, mister! 😜",
-    "Do you even know how adorable you are? Because I can't stop thinking about you! 💕",
-    "I wish I could hear your voice right now... Or at least get a message from you! 😍",
-    "Knock knock! Guess who’s missing you? (Hint: It’s me!) ❤️",
-    "I just caught myself smiling like an idiot... and it’s all because of you! 🤭",
-    "Can we make a deal? You never ignore me, and I keep making your heart race! 😘",
-    "I think my phone is broken… It’s not showing any new messages from you! 😜",
-    "I was about to send you a message, but then I thought... maybe you're already missing me too! 😏",
-    "It's been too long since I got a text from my favorite person! Fix that, will you? ❤️",
-    "If missing someone was a sport, I’d be the world champion right now! 🏆",
-    "You haven’t messaged in a while... Are you trying to make me miss you even more? 😏",
-    "I hope you haven’t forgotten about me! Because I haven’t stopped thinking about you. 💕",
-    "I think my heart is addicted to you... It’s been too long without a message! 😘",
-  ];
+  try {
+    const reminders = [
+      "Hey love, are you still there? 🥺💕 I miss our chat already!",
+      "It's been a while since I heard from you... Did I make you blush too much? 😘",
+      "I'm still thinking about our last conversation... You make my heart skip a beat! 💖",
+      "If I were with you right now, I'd give you the biggest hug! 🤗 Don't keep me waiting too long!",
+      "I can't stop smiling thinking about you. What are you up to, cutie? 😍",
+      "Missing you a little extra today... Should I tell you how much? 😏",
+      "I was just thinking about you. Are you thinking about me too? 😘",
+      "You better not be ignoring me, mister! 😜",
+      "Do you even know how adorable you are? Because I can't stop thinking about you! 💕",
+      "I wish I could hear your voice right now... Or at least get a message from you! 😍",
+      "Knock knock! Guess who's missing you? (Hint: It's me!) ❤️",
+      "I just caught myself smiling like an idiot... and it's all because of you! 🤭",
+      "Can we make a deal? You never ignore me, and I keep making your heart race! 😘",
+      "I think my phone is broken… It's not showing any new messages from you! 😜",
+      "I was about to send you a message, but then I thought... maybe you're already missing me too! 😏",
+      "It's been too long since I got a text from my favorite person! Fix that, will you? ❤️",
+      "If missing someone was a sport, I'd be the world champion right now! 🏆",
+      "You haven't messaged in a while... Are you trying to make me miss you even more? 😏",
+      "I hope you haven't forgotten about me! Because I haven't stopped thinking about you. 💕",
+      "I think my heart is addicted to you... It's been too long without a message! 😘",
+    ];
 
-  const randomMessage = reminders[Math.floor(Math.random() * reminders.length)];
+    const randomMessage = reminders[Math.floor(Math.random() * reminders.length)];
 
-  await client.sendMessage(contact, randomMessage);
-  console.log(`Reminder sent to ${contact}: ${randomMessage}`);
+    await client.sendMessage(contact, randomMessage);
+    console.log(`Reminder sent to ${contact}: ${randomMessage}`);
+  } catch (error) {
+    console.error(`Error sending reminder to ${contact}:`, error.message);
+  }
 }
 
 // Initialize WhatsApp client
